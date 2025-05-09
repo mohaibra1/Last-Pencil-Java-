@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="LastPencilTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-05-09T07:22:58" hostname="EVERIENCE" time="0.093">
+  <properties/>
+  <testcase name="start" classname="LastPencilTest" time="0.093"/>
+  <system-out><![CDATA[?[1;31m
+Start test 1?[0m
+||||||
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
