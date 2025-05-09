@@ -1,24 +1,25 @@
 package lastpencil;
 
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        // Ask for number of pencils
-        int number;
+        // Ask for pencils of pencils
+        int pencils;
         System.out.println("How many pencils would you like to use:");
         while (true) {
             String input = sc.nextLine();
 
             try {
-                number = Integer.parseInt(input);
+                pencils = Integer.parseInt(input);
 
-                if (number > 0) {
+                if (pencils > 0) {
                     break;
                 } else {
-                    if(number < 0){
+                    if(pencils < 0){
                         System.out.println("The number of pencils should be numeric");
                     }else {
                         System.out.println("The number of pencils should be positive");
@@ -30,51 +31,73 @@ public class Main {
             }
         }
 
-        // Ask who goes first
-        //sc.nextLine(); // Consume newline
-        String firstPlayer;
+        // Get first player
+        String player;
         while (true) {
             System.out.println("Who will be the first (John, Jack):");
-            firstPlayer = sc.nextLine();
-            if (firstPlayer.equals("John") || firstPlayer.equals("Jack")) {
+            player = sc.nextLine();
+            if (player.equals("John") || player.equals("Jack")) {
                 break;
             } else {
                 System.out.println("Choose between 'John' and 'Jack'");
             }
         }
 
-        String currentPlayer = firstPlayer;
+        // Game loop
+        while (pencils > 0) {
+            // Show pencils
+            System.out.println("|".repeat(pencils));
+            System.out.printf("%s's turn:\n", player);
 
-        while (number > 0) {
-            System.out.println("|".repeat(number));
-            System.out.printf("%s's turn!%n", currentPlayer);
+            int move;
 
-            int take;
-            while (true) {
-                if (sc.hasNextInt()) {
-                    take = sc.nextInt();
-                    if (take >= 1 && take <= 3) {
-                        if (take <= number) {
-                            break;
-                        } else {
+            if (player.equals("John")) {
+                // User move
+                while (true) {
+                    String input = sc.nextLine();
+                    try {
+                        move = Integer.parseInt(input);
+                        if (move < 1 || move > 3) {
+                            System.out.println("Possible values: '1', '2' or '3'");
+                        } else if (move > pencils) {
                             System.out.println("Too many pencils were taken");
+                        } else {
+                            break;
                         }
-                    } else {
-                        System.out.println("Possible values: '1', '2', or '3'");
+                    } catch (NumberFormatException e) {
+                        System.out.println("Possible values: '1', '2' or '3'");
                     }
-                } else {
-                    System.out.println("Possible values: '1', '2', or '3'");
-                    sc.next(); // Clear invalid input
                 }
+            } else {
+                // Bot move using winning strategy
+                move = botMove(pencils);
+                System.out.println(move);
             }
 
-            number -= take;
+            pencils -= move;
 
-            // Switch players
-            currentPlayer = currentPlayer.equals("John") ? "Jack" : "John";
+            // Check winner
+            if (pencils == 0) {
+                System.out.printf("%s won!\n", player.equals("John") ? "Jack" : "John");
+                break;
+            }
+
+            // Switch player
+            player = player.equals("John") ? "Jack" : "John";
         }
+    }
 
-        System.out.printf("%s won!%n", currentPlayer);
-        sc.close();
+    // Bot logic
+    public static int botMove(int pencils) {
+        if (pencils % 4 == 0) {
+            return 3;
+        } else if (pencils % 4 == 3) {
+            return 2;
+        } else if (pencils % 4 == 2) {
+            return 1;
+        } else {
+            // Losing position: pick random 1 to 3, but not more than remaining pencils
+            return Math.min(new Random().nextInt(3) + 1, pencils);
+        }
     }
 }
